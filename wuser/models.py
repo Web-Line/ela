@@ -4,7 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
-    PermissionsMixin
+    PermissionsMixin, Group
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
 from django.utils import timezone
@@ -12,6 +12,10 @@ from django.conf import settings
 from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 
 from wuser.storage import OverwriteStorage
+
+
+class Group(Group):
+    pass
 
 
 @deconstructible
@@ -163,3 +167,6 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+
+
+# admin_user = User.objects.get(is_superuser=True)
