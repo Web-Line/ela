@@ -32,7 +32,7 @@ class PathAndRename(object):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, national_id, first_name, last_name, password=None):
+    def create_user(self, national_id, first_name, last_name, email, password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -44,6 +44,7 @@ class UserManager(BaseUserManager):
             national_id=national_id,
             first_name=first_name,
             last_name=last_name,
+            email=email
         )
 
         user.set_password(password)
@@ -51,7 +52,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, national_id, first_name, last_name, password):
+    def create_superuser(self, national_id, first_name, last_name, email, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -59,12 +60,14 @@ class UserManager(BaseUserManager):
         user = self.create_user(national_id,
                                 first_name=first_name,
                                 last_name=last_name,
+                                email=email,
                                 password=password
                                 )
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
+        user.confirm_email(user.confirmation_key)
         return user
 
 
@@ -109,6 +112,7 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
                                    unique=True, validators=[kart_meli])
     first_name = models.CharField(_('first name'), max_length=30)
     last_name = models.CharField(_('last name'), max_length=30)
+    email = models.EmailField(_('email address'),)
     photo = models.ImageField(_('profile image'), upload_to=path_and_rename,
                               storage=OverwriteStorage(), null=True,
                               blank=True)
@@ -124,7 +128,7 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
     objects = UserManager()
 
     USERNAME_FIELD = 'national_id'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
     def get_full_name(self):
         """
