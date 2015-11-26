@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -50,6 +49,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+# use wuser User class
+AUTH_USER_MODEL = 'wuser.User'
 
 ROOT_URLCONF = 'ela.urls'
 
@@ -95,9 +97,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-
 
 
 # Static files (CSS, JavaScript, Images)
