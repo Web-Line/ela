@@ -163,6 +163,3 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
-
-
-admin_user = User.objects.get(is_superuser=True)
