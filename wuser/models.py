@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.conf import settings
 from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 
-from .wuser.storage import OverwriteStorage
+from wuser.storage import OverwriteStorage
 
 
 @deconstructible
@@ -27,7 +27,7 @@ class PathAndRename(object):
         return os.path.join(self.path, filename)
 
 
-class WUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self, national_id, first_name, last_name, password=None):
         """
         Creates and saves a User with the given email, date of
@@ -117,7 +117,7 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
                                         'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-    objects = WUserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'national_id'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -131,17 +131,24 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
 
     def get_short_name(self):
         """
-        :return: the short name for the user."""
+        :return: the short name for the user.
+        """
         return self.first_name
 
     @property
     def pic(self):
+        """
+        :return: the url of image profile for user
+        """
         if self.photo:
             return self.photo.url
         else:
             return os.path.join(settings.MEDIA_URL, 'avatars/0.png')
 
     def get_pic_html(self):
+        """
+        :return:the thumbnail html for 80x80 picture
+        """
         return format_html(
             '<img src="{}" class="img-thumbnail" width="80" height="80">',
             self.pic)
