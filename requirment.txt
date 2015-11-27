@@ -2,4 +2,4 @@ django==1.8
 django_simple_email_confirmation
 pillow
 django-suit
-guardian=1.3.2
+django-guardian
