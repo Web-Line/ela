@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'simple_email_confirmation',
     'wuser',
-    'guardian',
+    'rolepermissions',
 )
 
 MIDDLEWARE_CLASSES = (
