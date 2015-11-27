@@ -53,9 +53,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-# use wuser User class
-AUTH_USER_MODEL = 'wuser.User'
-
 ROOT_URLCONF = 'ela.urls'
 
 TEMPLATES = [
@@ -107,3 +104,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# use wuser User class
+AUTH_USER_MODEL = 'wuser.User'
+ROLEPERMISSIONS_MODULE = 'ela.roles'
