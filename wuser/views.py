@@ -6,8 +6,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 # Create your views here.
-def confirm_email(request, id, key):
-    user = get_object_or_404(User, pk=id)
+def confirm_email(request, user_id, key):
+    """
+     get user and confirmed_key to confirm and activate user (is_active)
+    """
+    user = get_object_or_404(User, pk=user_id)
     if user.is_confirmed:
         return render(request, template_name='admin/base_site.html', context={
             'messages': [_("Your email: {} has been already confirmed!"
