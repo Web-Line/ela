@@ -8,7 +8,7 @@ from django.contrib.auth.admin import UserAdmin
 
 class UserCreationForm(forms.ModelForm):
     """
-    form for user creation and only get necessary fields    
+    form for user creation and only get necessary fields
     """
     error_messages = {
         'password_mismatch': _("The two password fields didn't match."),
@@ -67,10 +67,8 @@ class UserChangeForm(forms.ModelForm):
 
 
 class WUserAdmin(UserAdmin):
-    # add_form_template = 'admin/auth/user/add_form.html'
-    # change_user_password_template = None
+    # change_user_password_template = None  # TODO: add reset user password feature
     form = UserChangeForm
-    # change_list_template = 'admin/auth/user/profile.html'
     add_form = UserCreationForm
 
     suit_form_tabs = (('general', 'General'),
