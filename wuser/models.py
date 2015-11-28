@@ -14,10 +14,6 @@ from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 from wuser.storage import OverwriteStorage
 
 
-class Group(Group):
-    pass
-
-
 @deconstructible
 class PathAndRename(object):
     def __init__(self, sub_path):
@@ -116,13 +112,11 @@ class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin)
     photo = models.ImageField(_('profile image'), upload_to=path_and_rename,
                               storage=OverwriteStorage(), null=True,
                               blank=True)
-    is_staff = models.BooleanField(_('staff status'), default=False,
-                                   help_text=_(
-                                       'Designates whether the user can log into staff site.'))
-    is_active = models.BooleanField(_('active'), default=True,
-                                    help_text=_(
-                                        'Designates whether this user should be treated as '
-                                        'active. Unselect this instead of deleting accounts.'))
+    is_staff = models.BooleanField(_('staff status'), default=False, help_text=
+    _('Designates whether the user can log into staff site.'))
+    is_active = models.BooleanField(_('active'), default=True, help_text=
+    _('Designates whether this user should be treated as active. Unselect this '
+      'instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     objects = UserManager()
