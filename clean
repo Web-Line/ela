@@ -1,0 +1,19 @@
+#!/bin/bash
+echo "Starting ..."
+
+echo ">> Deleting old migrations"
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+
+# Optional
+echo ">> Deleting database"
+mysql -u root -p -e "drop database if exists ela; create database ela;"
+
+echo ">> Running manage.py makemigrations"
+python manage.py makemigrations
+
+echo ">> Running manage.py migrate"
+python manage.py migrate
+
+echo ">> Creating superuser"
+python setup_initial_data.py
+echo ">> Done"
