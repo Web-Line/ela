@@ -1,0 +1,107 @@
+#!/bin/bash
+
+user_default="ela"
+database_default="ela"
+mysql_user="root"
+
+# get username, to work on that.
+get_user(){
+    read -p "Enter mysql user or press enter [$user_default]:" user;
+
+    if [[ -z $user ]]; then
+        user=$user_default
+    fi
+}
+
+# get database name, to work on that.
+get_database(){
+    read -p "Enter mysql database or press enter [$database_default]:" database;
+
+    if [[ -z $database ]]; then
+        database=$database_default
+    fi
+}
+
+# prompt for mysql root password.
+get_root_password() {
+    read -s -p "mysql root password: " mysql_root_password ; echo
+}
+
+# format mysql command string. mysql_command is used each time running a sql expression.
+mysql_command() {
+    mysql -BNu $mysql_user --password=$mysql_root_password 2>&1
+}
+
+# fetch a list of available users.
+fetch_all_users(){
+    users="$(echo 'use mysql; SELECT 'user' FROM 'user';' | mysql_command)"
+}
+
+remove_mysql_user() {
+    read -p "Do you want to remove '$user'? (yes, no): " prompt
+
+    if [[ $prompt == "yes" ]]; then
+        mysql_err="$(echo 'DROP USER '$user'@'localhost';' | mysql_command)"
+        if [[ -z $mysql_err ]]; then
+            echo "Successfully removed '$user' from mysql. You should run this script again,
+in order to create user '$user' with appropriate privileges."
+        else
+            echo "mysql error: $mysql_err"
+            exit;
+        fi
+    fi
+}
+
+add_mysql_user() {
+    echo "Adding user '$user'"
+
+    command='CREATE USER '$user'@'localhost';'
+    read -p "Enter $user's password, or leave it empty: " password
+
+    if [[ $password ]]; then
+        command='CREATE USER '$user'@'localhost' IDENTIFIED BY '$password';'
+    fi
+
+    mysql_err="$(echo $command | mysql_command)"
+
+    if [[ -z $mysql_err ]]; then
+        echo "Successfully added '$user' to mysql."
+    else
+        echo "mysql error: $mysql_err"
+        exit;
+    fi
+}
+
+set_user_privileges() {
+    echo "Setting privileges for user '$user' on database '$database'"
+
+    sql='CREATE DATABASE IF NOT EXISTS '$database';GRANT ALL PRIVILEGES ON '$database'.* TO '$user'@'localhost';FLUSH PRIVILEGES;'
+    mysql_err="$(echo "$sql" | mysql_command)"
+
+    if [[ -z $mysql_err ]]; then
+        echo "Successfully set privileges for user '$user' on database '$database'"
+    else
+        echo "mysql error: $mysql_err"
+        exit;
+    fi
+}
+
+check_if_user_already_exists() {
+    # loop on each user, check if user exists in mysql.
+    for u in $users; do
+        if [[ $u == $user ]]; then
+            echo "User '$user' already exists."
+            remove_mysql_user $user
+            echo "Nothing left to do, exiting"
+            exit;
+        fi
+    done;
+}
+
+get_user
+get_database
+get_root_password
+fetch_all_users
+check_if_user_already_exists
+add_mysql_user
+set_user_privileges
