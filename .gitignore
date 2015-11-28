@@ -59,3 +59,5 @@ target/
 *.iml
 *.sqlite3
 **/migrations/**
+static/
+media/
