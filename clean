@@ -14,6 +14,7 @@ python manage.py makemigrations
 echo ">> Running manage.py migrate"
 python manage.py migrate
 
-echo ">> Creating superuser"
-python setup_initial_data.py
+#echo ">> Creating superuser"
+#python setup_initial_data.py
+
 echo ">> Done"
