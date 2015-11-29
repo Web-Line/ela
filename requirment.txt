@@ -1,5 +1,4 @@
 django==1.8
-django_simple_email_confirmation
 pillow
 django-suit
 django-role-permissions

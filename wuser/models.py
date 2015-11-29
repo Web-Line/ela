@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
 from django.utils import timezone
 from django.conf import settings
-from simple_email_confirmation import SimpleEmailConfirmationUserMixin
+#from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 
 from wuser.storage import OverwriteStorage
 
@@ -99,7 +99,7 @@ def kart_meli(value):
         raise ValidationError(_('National ID is not correct'))
 
 
-class User(AbstractBaseUser, PermissionsMixin, SimpleEmailConfirmationUserMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     """
     main user class which inherit from AbstractBaseUser and implements some
     features.
