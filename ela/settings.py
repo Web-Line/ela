@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'suit',
+    'wuser',
     'account',
     'rolepermissions',
     'django.contrib.admin',
