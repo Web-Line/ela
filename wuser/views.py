@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from models import User
+from wuser.models import User
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _

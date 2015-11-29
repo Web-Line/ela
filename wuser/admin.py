@@ -1,6 +1,6 @@
 # from django.contrib import admin
 from django import forms
-from models import User
+from wuser.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.admin import UserAdmin
