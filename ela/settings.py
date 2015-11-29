@@ -120,3 +120,90 @@ MEDIA_ROOT = 'media/'
 # use wuser User class
 AUTH_USER_MODEL = 'wuser.User'
 ROLEPERMISSIONS_MODULE = 'ela.roles'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[Name:%(name)s] '
+                      '[Time:%(asctime)s] '
+                      '[Process:%(process)d] '
+                      '[Thread:%(thread)d] '
+                      '[Level:%(levelname)s] '
+                      '[Module:%(module)s] '
+                      '[Func:%(funcName)s] '
+                      '[Line:%(lineno)d] '
+                      '[Message:%(message)s] ',
+        },
+        'semi_verbose': {
+            'format': '[%(name)s] '
+                      '[Time:%(asctime)s] '
+                      '[Level:%(levelname)s] '
+                      '[Module:%(module)s] '
+                      '[Func:%(funcName)s] '
+                      '[Line:%(lineno)d] '
+                      '[Message:%(message)s] ',
+        },
+        'simple': {
+            'format': '[%(message)s]',
+        },
+    },
+    'filters': {
+        # 'special': {
+        #     '()': 'project.logging.SpecialFilter',
+        #     'foo': 'bar',
+        # }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'semi_verbose'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'ela': {
+            'handlers': ['console', 'mail_admins', 'file', ],
+            'level': 'DEBUG',
+        },
+    }
+}
+
+STATIC_PRECOMPILER_COMPILERS = (
+    'static_precompiler.compilers.STYLUS',
+    'static_precompiler.compilers.CoffeeScript',
+    'static_precompiler.compilers.SASS',
+    'static_precompiler.compilers.SCSS',
+    'static_precompiler.compilers.LESS',
+)
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
