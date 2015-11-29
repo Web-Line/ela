@@ -1,7 +1,7 @@
 #     ELA
 Full automation system for an institute.
 
-This is a web{site/application}, for an institute named *ELA*. This is a free software.
+This is a web{site/application}, for an institute named *ELA*.
 
 Main Features:
   - User management. (usr)
