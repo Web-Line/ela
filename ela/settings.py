@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'ela.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ela',
+        'NAME': 'eladb',
         'USER': 'ela',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
