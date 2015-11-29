@@ -32,7 +32,7 @@ get_root_password() {
 
 # format mysql command string. mysql_command is used each time running a sql expression.
 mysql_command() {
-    mysql -BNu $mysql_user --password=$mysql_root_password 2>&1
+    mysql -BNu $mysql_user -p 2>&1
 }
 
 # fetch a list of available users.
@@ -144,7 +144,7 @@ run_django_migrations() {
 
 get_user
 get_database
-get_root_password
+#get_root_password
 fetch_all_users
 check_if_user_already_exists
 add_mysql_user
