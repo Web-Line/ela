@@ -1,5 +1,6 @@
 #!/bin/bash
 
+alias python='/usr/bin/env python'
 user_default="ela"
 database_default="eladb"
 user=$user_default
@@ -52,6 +53,9 @@ in order to create user '$user' with appropriate privileges."
             echo "mysql error: $mysql_err"
             exit;
         fi
+    else
+        echo "You should remove $user in order to continue setup."
+        exit
     fi
 }
 
@@ -75,10 +79,38 @@ add_mysql_user() {
     fi
 }
 
-set_user_privileges() {
-    echo ">> Setting privileges for user '$user' on database '$database'"
+setup_database() {
+    echo ">> Creating database $database"
 
-    sql='CREATE DATABASE IF NOT EXISTS '$database';GRANT ALL PRIVILEGES ON '$database'.* TO '$user'@'localhost';FLUSH PRIVILEGES;'
+    sql='DROP DATABASE IF EXISTS '$database';'
+
+    mysql_err="$(echo "$sql" | mysql_command)"
+
+    if [[ -z $mysql_err ]]; then
+        echo "Successfully dropped database '$database'"
+    else
+        echo "mysql error: $mysql_err"
+        exit;
+    fi
+
+    sql='CREATE DATABASE '$database';'
+
+    mysql_err="$(echo "$sql" | mysql_command)"
+
+    if [[ -z $mysql_err ]]; then
+        echo "Successfully created database '$database'"
+    else
+        echo "mysql error: $mysql_err"
+        exit;
+    fi
+}
+
+set_user_privilages() {
+    echo ">> Re creating database $database and Setting privileges for user '$user' on database '$database'"
+
+    sql='CREATE DATABASE IF NOT EXISTS '$database';
+    GRANT ALL PRIVILEGES ON '$database'.* TO '$user'@'localhost';
+    FLUSH PRIVILEGES;'
     mysql_err="$(echo "$sql" | mysql_command)"
 
     if [[ -z $mysql_err ]]; then
@@ -95,16 +127,27 @@ check_if_user_already_exists() {
         if [[ $u == $user ]]; then
             echo "User '$user' already exists."
             remove_mysql_user $user
-            echo "Nothing left to do, exiting"
-            exit;
+            #echo "Nothing left to do, exiting"
+            #exit;
         fi
     done;
 }
 
-#get_user
-#get_database
+run_django_migrations() {
+    echo ">> Running manage.py makemigrations"
+    python manage.py makemigrations
+
+    echo ">> Running manage.py migrate"
+    python manage.py migrate
+
+}
+
+get_user
+get_database
 get_root_password
 fetch_all_users
 check_if_user_already_exists
 add_mysql_user
-set_user_privileges
+setup_database
+set_user_privilages
+run_django_migrations
