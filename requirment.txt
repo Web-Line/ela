@@ -4,3 +4,4 @@ pillow
 django-suit
 django-role-permissions
 django-user-accounts
+django-registration
