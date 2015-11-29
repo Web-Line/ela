@@ -1,7 +1,9 @@
 #!/bin/bash
 
 user_default="ela"
-database_default="ela"
+database_default="eladb"
+user=$user_default
+database=$database_default
 mysql_user="root"
 
 # get username, to work on that.
@@ -34,6 +36,7 @@ mysql_command() {
 
 # fetch a list of available users.
 fetch_all_users(){
+    echo ">> Fetching list of all mysql users"
     users="$(echo 'use mysql; SELECT 'user' FROM 'user';' | mysql_command)"
 }
 
@@ -53,7 +56,7 @@ in order to create user '$user' with appropriate privileges."
 }
 
 add_mysql_user() {
-    echo "Adding user '$user'"
+    echo ">> Adding user '$user'"
 
     command='CREATE USER '$user'@'localhost';'
     read -p "Enter $user's password, or leave it empty: " password
@@ -73,7 +76,7 @@ add_mysql_user() {
 }
 
 set_user_privileges() {
-    echo "Setting privileges for user '$user' on database '$database'"
+    echo ">> Setting privileges for user '$user' on database '$database'"
 
     sql='CREATE DATABASE IF NOT EXISTS '$database';GRANT ALL PRIVILEGES ON '$database'.* TO '$user'@'localhost';FLUSH PRIVILEGES;'
     mysql_err="$(echo "$sql" | mysql_command)"
@@ -98,8 +101,8 @@ check_if_user_already_exists() {
     done;
 }
 
-get_user
-get_database
+#get_user
+#get_database
 get_root_password
 fetch_all_users
 check_if_user_already_exists
