@@ -6,7 +6,7 @@ database_default="eladb"
 user=$user_default
 database=$database_default
 mysql_user="root"
-
+ignore=Warning*
 # get username, to work on that.
 get_user(){
     read -p "Enter mysql user or press enter [$user_default]:" user;
@@ -32,7 +32,7 @@ get_root_password() {
 
 # format mysql command string. mysql_command is used each time running a sql expression.
 mysql_command() {
-    mysql -BNu $mysql_user -p 2>&1
+    mysql -BNu $mysql_user --password=$mysql_root_password 2>&1
 }
 
 # fetch a list of available users.
@@ -75,7 +75,9 @@ add_mysql_user() {
         echo "Successfully added '$user' to mysql."
     else
         echo "mysql error: $mysql_err"
-        exit;
+        if [[ ! $mysql_err == Warning* ]]; then
+            exit;
+        fi
     fi
 }
 
@@ -90,7 +92,9 @@ setup_database() {
         echo "Successfully dropped database '$database'"
     else
         echo "mysql error: $mysql_err"
-        exit;
+        if [[ ! $mysql_err == Warning* ]]; then
+            exit;
+        fi
     fi
 
     sql='CREATE DATABASE '$database';'
@@ -101,7 +105,9 @@ setup_database() {
         echo "Successfully created database '$database'"
     else
         echo "mysql error: $mysql_err"
-        exit;
+        if [[ ! $mysql_err == Warning* ]]; then
+            exit;
+        fi
     fi
 }
 
@@ -117,7 +123,9 @@ set_user_privilages() {
         echo "Successfully set privileges for user '$user' on database '$database'"
     else
         echo "mysql error: $mysql_err"
-        exit;
+        if [[ ! $mysql_err == Warning* ]]; then
+            exit;
+        fi
     fi
 }
 
@@ -144,7 +152,7 @@ run_django_migrations() {
 
 get_user
 get_database
-#get_root_password
+get_root_password
 fetch_all_users
 check_if_user_already_exists
 add_mysql_user
