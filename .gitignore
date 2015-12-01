@@ -61,3 +61,6 @@ target/
 **/migrations/**
 static/
 media/
+*.pyc
+node_modules/
+pinax/*

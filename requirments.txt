@@ -1,7 +1,0 @@
-django==1.8.6
-pillow
-django-suit
-django-role-permissions
-django-user-accounts
-django-registration
-mysqlclient==1.3.7
