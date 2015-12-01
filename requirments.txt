@@ -1,4 +1,4 @@
-django==1.8
+django==1.8.6
 pillow
 django-suit
 django-role-permissions
