@@ -63,4 +63,4 @@ static/
 media/
 *.pyc
 node_modules/
-pinax/*
+pinax/*update.sh
