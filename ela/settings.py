@@ -243,18 +243,13 @@ LOGGING = {
 
     },
     "loggers": {
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'INFO',
-        },
         "django.request": {
             "handlers": ["mail_admins"],
             "level": "ERROR",
             "propagate": True,
         },
         'ela': {
-            'handlers': ['console', 'mail_admins', 'file', ],
+            'handlers': ['mail_admins', 'file', ],
             'level': 'DEBUG',
         },
     }
