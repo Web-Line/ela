@@ -32,29 +32,14 @@ ALLOWED_HOSTS = []
 TIME_ZONE = "UTC"
 
 # Language code for this installation. All choices can be found here:
+# Internationalization
+# https://docs.djangoproject.com/en/1.8/topics/i18n/
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = "en-us"
 
 SITE_ID = int(os.environ.get("SITE_ID", 1))
 
 ROOT_URLCONF = 'ela.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.core.context_processors.request',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
 
 WSGI_APPLICATION = 'ela.wsgi.application'
 
@@ -76,14 +61,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -163,11 +140,6 @@ MIDDLEWARE_CLASSES = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "ela.urls"
-
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = "ela.wsgi.application"
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -244,7 +216,7 @@ LOGGING = {
     },
     "loggers": {
         "django.request": {
-            "handlers": ["mail_admins"],
+            "handlers": ["mail_admins", "file"],
             "level": "ERROR",
             "propagate": True,
         },
