@@ -245,6 +245,7 @@ ACCOUNT_LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
+ACCOUNT_USER_DISPLAY = lambda user: user.get_full_name
 
 AUTHENTICATION_BACKENDS = [
     "account.auth_backends.UsernameAuthenticationBackend",
