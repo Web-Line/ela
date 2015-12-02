@@ -3,7 +3,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+                                        PermissionsMixin, Permission)
+from django.contrib.auth.models import Group as MasterGroup
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
 from django.utils import timezone
@@ -11,6 +12,10 @@ from django.conf import settings
 # from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 
 from wuser.storage import OverwriteStorage
+
+
+class Group(MasterGroup):
+    pass
 
 
 @deconstructible
@@ -131,6 +136,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
+    
+    full_name = property(get_full_name)
 
     def get_short_name(self):
         """
