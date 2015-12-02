@@ -161,6 +161,7 @@ INSTALLED_APPS = [
     # project
     "ela",
     "user_account",
+    "wuser",
 ]
 
 # A sample logging configuration. The only tangible logging
@@ -236,6 +237,8 @@ STATIC_PRECOMPILER_COMPILERS = (
     'static_precompiler.compilers.LESS',
 )
 
+AUTH_USER_MODEL = 'wuser.User'
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ACCOUNT_OPEN_SIGNUP = True
@@ -245,7 +248,7 @@ ACCOUNT_LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
-ACCOUNT_USER_DISPLAY = lambda user: user.get_full_name
+ACCOUNT_USER_DISPLAY = lambda user: user.full_name
 
 AUTHENTICATION_BACKENDS = [
     "account.auth_backends.UsernameAuthenticationBackend",
