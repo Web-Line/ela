@@ -47,8 +47,7 @@ remove_mysql_user() {
     if [[ $prompt == "yes" ]]; then
         mysql_err="$(echo 'DROP USER '$user'@'localhost';' | mysql_command)"
         if [[ -z $mysql_err ]]; then
-            echo "Successfully removed '$user' from mysql. You should run this script again,
-in order to create user '$user' with appropriate privileges."
+            echo "Successfully removed '$user' from mysql."
         else
             echo "mysql error: $mysql_err"
             exit;
@@ -150,6 +149,23 @@ run_django_migrations() {
 
 }
 
+prompt_for_collect_statics() {
+    echo ">> Setup is complete. "
+    read -p "Do you want to collect statics? (yes, no) [no]: " prompt
+    if [[ $prompt == "yes" ]]; then
+        echo ">> Collecting static files"
+        python manage.py collectstatic -l
+    fi
+}
+
+prompt_for_run_server() {
+    read -p "Do you want to runserver? (yes, no) [no]: " prompt
+    if [[ $prompt == "yes" ]]; then
+        echo ">> Running server on defualt port and ip"
+        python manage.py runserver
+    fi
+
+}
 get_user
 get_database
 get_root_password
@@ -159,3 +175,5 @@ add_mysql_user
 setup_database
 set_user_privilages
 run_django_migrations
+prompt_for_collect_statics
+prompt_for_run_server
