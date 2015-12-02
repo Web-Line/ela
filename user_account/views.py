@@ -15,4 +15,4 @@ class SignupView(AccountSignupView):
     
     def after_signup(self, form):
         self.update_profile(form)
-        super(AccountSignupView, self).after_signup(form)
+        super(SignupView, self).after_signup(form)
