@@ -61,3 +61,4 @@ target/
 **/migrations/**
 static/
 media/
+node_modules/
