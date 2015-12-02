@@ -1,6 +1,8 @@
 #     ELA
 Full automation system for an institute.
+
 Notice: Currently ela is heavily under development, it will be ready soon.
+
 This is a web application, including website for an institute named *ELA*.
 
 Main Features:
