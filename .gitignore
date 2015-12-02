@@ -58,7 +58,7 @@ target/
 .idea/
 *.iml
 *.sqlite3
-**/migrations/**
+/migrations/**
 static/
 media/
 node_modules/
