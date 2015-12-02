@@ -160,6 +160,7 @@ INSTALLED_APPS = [
 
     # project
     "ela",
+    "user_account",
 ]
 
 # A sample logging configuration. The only tangible logging
