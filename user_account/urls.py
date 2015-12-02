@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from.views import AcountSignupView
+from.views import SignupView
 
 
 urlpatterns = [
-    url(r'^signup/$', AcountSignupView.as_view(), name="account_signup"),
+    url(r'^signup/$', SignupView.as_view(), name="account_signup"),
 ]

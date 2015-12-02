@@ -1,9 +1,9 @@
-from account.views import SignupView as AcountSignupView
+from account.views import SignupView as AccountSignupView
 from .models import UserProfile
 from .forms import SignupForm
 
 
-class SignupView(AcountSignupView):
+class SignupView(AccountSignupView):
     form_class = SignupForm
     
     def update_profile(self, form):
