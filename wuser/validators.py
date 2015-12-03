@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
+
 
 def national_id_validator(value):
     """
