@@ -147,6 +147,9 @@ run_django_migrations() {
     echo ">> Running manage.py migrate"
     python manage.py migrate
 
+    echo ">> Loading site data"
+    python manage.py loaddata fixtures/sites
+
 }
 
 prompt_for_collect_statics() {
