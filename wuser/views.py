@@ -23,10 +23,15 @@
 #         user.is_active = True
 #         user.save()
 
-from account.views import SignupView as AccountSignupView
+from account.views import (SignupView as AccountSignupView,
+                           LoginView as AccountLoginView)
 from wuser.forms import SignupForm
 from wuser.models import UserProfile
+from account import signals
 
+import logging
+
+logger = logging.getLogger("ela")
 
 class SignupView(AccountSignupView):
     form_class = SignupForm
@@ -41,3 +46,17 @@ class SignupView(AccountSignupView):
     def after_signup(self, form):
         self.update_profile(form)
         super(SignupView, self).after_signup(form)
+
+
+class LoginView(AccountLoginView):
+    """
+    Currently extending "AccountLoginView" on wuser/views.py "Loginview" is not
+    really meaningful.
+
+    Idea of using signals appears better, but i feel there gonna be use cases
+    of extending "AccountLoginView" in future, so i left the implementation here
+    """
+
+    def after_login(self, form):
+        logger.debug("form={}".format(form))
+        signals.user_logged_in.send(sender=LoginView, user=form.user, form=form)
