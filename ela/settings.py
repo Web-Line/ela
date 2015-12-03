@@ -158,6 +158,7 @@ INSTALLED_APPS = [
     "account",
     "metron",
     "pinax.eventlog",
+    "pinax.notifications",
 
     # project
     "ela",

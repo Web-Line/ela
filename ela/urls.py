@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r"^admin/", include(admin.site.urls)),
     url(r"^account/", include("wuser.urls")),
     url(r"^account/", include("account.urls")),
+    url(r"^notifications/", include("pinax.notifications.urls")),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
