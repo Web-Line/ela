@@ -3,12 +3,17 @@ from django.db.models.signals import post_migrate
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
 import logging
 
 logger = logging.getLogger("ela")
 
-def setup_superuser(sender, **kwargs):
+def handle_post_migrate(sender, **kwargs):
+    """
+    It sets up a superuser when DEBUG is True.
+    :param sender:
+    :param kwargs:
+    :return:
+    """
     logger.debug('Handling post_migrate signal, DEBUG={}, interactive={}'.format(
         settings.DEBUG, kwargs['interactive']))
     if settings.DEBUG and kwargs['interactive']:
@@ -18,7 +23,8 @@ def setup_superuser(sender, **kwargs):
 
 class WUserAppConfig(AppConfig):
     name = 'wuser'
-    verbose_name = _("Authentication and Authorization")
+    verbose_name = _("Authentication")
 
     def ready(self):
-        post_migrate.connect(setup_superuser, sender=self)
+        post_migrate.connect(handle_post_migrate, sender=self)
+        from wuser.signals import handle_user_logged_in
