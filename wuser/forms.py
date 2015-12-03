@@ -14,7 +14,7 @@ class SignupForm(account.forms.SignupForm):
     gender = forms.ChoiceField(label=_('gender'),
                                choices=UserProfile.GENDER_CHOICES,
                                required=True)
-    birthdate = forms.DateField(widget=SelectDateWidget(years=range(1910, 1991)))
+    birth_date = forms.DateField(widget=SelectDateWidget(years=range(1910, 1991)))
     phone_number = forms.CharField(label=_('phone number'),
                                    validators=[RegexValidator(regex='^\d*$',
                                                               message=_('not correct, only numbers'))],
