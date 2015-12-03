@@ -39,7 +39,7 @@ class SignupView(AccountSignupView):
     def update_profile(self, form):
         UserProfile.objects.create(
             user=self.created_user,
-            birthdate=form.cleaned_data["birthdate"],
+            birth_date=form.cleaned_data["birth_date"],
             fathers_name=form.cleaned_data["fathers_name"],
         )
 
