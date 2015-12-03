@@ -9,9 +9,10 @@ from wuser import views
 # ]
 
 from django.conf.urls import url
-from wuser.views import SignupView
+from wuser.views import (SignupView, LoginView)
 
 
 urlpatterns = [
     url(r'^signup/$', SignupView.as_view(), name="account_signup"),
+    url(r'^login/$', LoginView.as_view(), name="account_login"),
 ]
