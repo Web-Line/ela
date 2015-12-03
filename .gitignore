@@ -59,6 +59,7 @@ target/
 *.iml
 *.sqlite3
 **/migrations/**
+!**/migrations/__init__.py
 static/
 media/
 node_modules/
