@@ -1,6 +1,5 @@
 import os
 from django.db import models
-from django.utils.deconstruct import deconstructible
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin, Permission)
 from django.contrib.auth.models import Group as MasterGroup
@@ -10,23 +9,11 @@ from django.utils import timezone
 from django.conf import settings
 from wuser.storage import OverwriteStorage
 from wuser.validators import national_id_validator
+from wuser.hooks import profile_picture_path_hook
 
 
 class Group(MasterGroup):
     pass
-
-
-@deconstructible
-class PathAndRename(object):
-    def __init__(self, sub_path):
-        self.path = sub_path
-
-    def __call__(self, instance, filename):
-        ext = filename.split('.')[-1]
-        # set filename as random string
-        filename = '{}.{}'.format(instance.id, ext)
-        # return the whole path to the file
-        return os.path.join(self.path, filename)
 
 
 class UserManager(BaseUserManager):
@@ -62,29 +49,27 @@ class UserManager(BaseUserManager):
         return user
 
 
-path_and_rename = PathAndRename("avatars")
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     """
     main user class which inherit from AbstractBaseUser and implements some
     features.
     """
-    national_id = models.CharField(_('National ID(username)'), max_length=10,
+    national_id = models.CharField(_('national ID (username)'), max_length=10,
                                    unique=True,
                                    validators=[national_id_validator])
-    first_name = models.CharField(_('First Name'), max_length=30)
-    last_name = models.CharField(_('Last Name'), max_length=30)
-    email = models.EmailField(_('Email'), )
-    picture = models.ImageField(_('Profile Picture'), upload_to=path_and_rename,
+    first_name = models.CharField(_('first name'), max_length=30)
+    last_name = models.CharField(_('last name'), max_length=30)
+    email = models.EmailField(_('email address'), )
+    picture = models.ImageField(_('profile picture'),
+                                upload_to=profile_picture_path_hook,
                                 storage=OverwriteStorage(), null=True,
                                 blank=True)
-    is_staff = models.BooleanField(_('Staff Status'), default=False, help_text=
+    is_staff = models.BooleanField(_('staff status'), default=False, help_text=
     _('Designates whether the user can log into staff site.'))
-    is_active = models.BooleanField(_('Active'), default=True, help_text=
+    is_active = models.BooleanField(_('active'), default=True, help_text=
     _('Designates whether this user should be treated as active. Unselect this '
       'instead of deleting accounts.'))
-    date_joined = models.DateTimeField(_('Date Joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     objects = UserManager()
 
@@ -140,13 +125,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    fathers_name = models.CharField(_('Fathers Name'), max_length=30)
-    birth_date = models.DateField(_('Birth Date'))
-    phone_number = models.CharField(_('Phone Number'), max_length=20,
+    fathers_name = models.CharField(_('fathers name'), max_length=30)
+    birth_date = models.DateField(_('birth date'))
+    phone_number = models.CharField(_('phone number'), max_length=20,
                                     null=True, blank=False)
-    home_phone = models.CharField(_('Home Phone'), max_length=20, null=True,
+    home_phone = models.CharField(_('home phone'), max_length=20, null=True,
                                   blank=True)
-    home_address = models.TextField(_('Home Address'), max_length=100,
+    home_address = models.TextField(_('home address'), max_length=100,
                                     null=True, blank=False)
     MALE = 1
     FEMALE = 2
@@ -154,9 +139,9 @@ class UserProfile(models.Model):
         (MALE, 'Male'),
         (FEMALE, 'Female'),
     )
-    gender = models.IntegerField(_('Gender'), choices=GENDER_CHOICES,
+    gender = models.IntegerField(_('gender'), choices=GENDER_CHOICES,
                                  null=True, blank=False)
-    description = models.TextField(_('Description'), null=True, blank=True,
+    description = models.TextField(_('description'), null=True, blank=True,
                                    max_length=150)
     WEBSITE = 1
     TRAKT = 2
@@ -168,7 +153,7 @@ class UserProfile(models.Model):
         (FRIENDS, 'Friends'),
         (OTHER, 'Other')
     )
-    acquaintance_way = models.IntegerField(
-        _('How did you find "ela"?'), choices=ACQUAINTANCE_WAY_CHOICES,
-        default=WEBSITE, null=True,
-        blank=True)
+    acquaintance_way = models.IntegerField(_('How did you find "ela"?'),
+                                           choices=ACQUAINTANCE_WAY_CHOICES,
+                                           default=WEBSITE, null=True,
+                                           blank=True)
