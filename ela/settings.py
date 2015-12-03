@@ -162,6 +162,7 @@ INSTALLED_APPS = [
     # project
     "ela",
     "wuser",
+    "edu",
 ]
 
 # A sample logging configuration. The only tangible logging
