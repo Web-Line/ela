@@ -214,6 +214,11 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'debug.log',
         },
+        'standard-output': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'semi_verbose'
+        },
 
     },
     "loggers": {
@@ -223,7 +228,7 @@ LOGGING = {
             "propagate": True,
         },
         'ela': {
-            'handlers': ['mail_admins', 'file', ],
+            'handlers': ['mail_admins', 'file', 'standard-output'],
             'level': 'DEBUG',
         },
     }
