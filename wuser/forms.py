@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 from django.utils.translation import ugettext_lazy as _
-from models import UserProfile
+from wuser.models import UserProfile
 from django.core.validators import RegexValidator
 import account.forms
 

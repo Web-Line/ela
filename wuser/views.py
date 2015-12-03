@@ -22,3 +22,22 @@
 #             raise PermissionDenied
 #         user.is_active = True
 #         user.save()
+
+from account.views import SignupView as AccountSignupView
+from wuser.forms import SignupForm
+from wuser.models import UserProfile
+
+
+class SignupView(AccountSignupView):
+    form_class = SignupForm
+
+    def update_profile(self, form):
+        UserProfile.objects.create(
+            user=self.created_user,
+            birthdate=form.cleaned_data["birthdate"],
+            fathers_name=form.cleaned_data["fathers_name"],
+        )
+
+    def after_signup(self, form):
+        self.update_profile(form)
+        super(SignupView, self).after_signup(form)

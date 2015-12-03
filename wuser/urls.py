@@ -7,3 +7,11 @@ from wuser import views
 #         views.confirm_email, name='confirm-email'),
 #
 # ]
+
+from django.conf.urls import url
+from wuser.views import SignupView
+
+
+urlpatterns = [
+    url(r'^signup/$', SignupView.as_view(), name="account_signup"),
+]

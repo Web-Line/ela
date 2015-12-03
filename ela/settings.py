@@ -160,7 +160,6 @@ INSTALLED_APPS = [
 
     # project
     "ela",
-    "user_account",
     "wuser",
 ]
 
