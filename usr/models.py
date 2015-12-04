@@ -1,7 +1,6 @@
 import os
 from django.db import models
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin, Permission)
+from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
 from django.contrib.auth.models import Group as MasterGroup
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
@@ -10,43 +9,11 @@ from django.conf import settings
 from usr.storage import OverwriteStorage
 from usr.validators import national_id_validator
 from usr.hooks import ProfilePicturePathHook
+from usr.managers import UserManager
 
 
 class Group(MasterGroup):
     pass
-
-
-class UserManager(BaseUserManager):
-    def create_user(self, national_id, first_name, last_name, email,
-                    password=None):
-        """
-        Creates and saves a User with the given email, date of
-        birth and password.
-        """
-        if not national_id:
-            raise ValueError('Users must provide a national id')
-
-        user = self.model(national_id=str(national_id), first_name=first_name,
-                          last_name=last_name, email=email)
-
-        user.set_password(password)
-        user.is_admin = False
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, national_id, first_name, last_name, email,
-                         password):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        user = self.create_user(national_id, first_name=first_name,
-                                last_name=last_name, email=email,
-                                password=password)
-        user.is_admin, user.is_staff, user.is_superuser = True, True, True
-        user.save(using=self._db)
-        # user.confirm_email(user.confirmation_key)
-        return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -80,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         :return: the first_name plus the last_name, with a space in between.
         """
-        full_name = '%s %s' % (self.first_name, self.last_name)
+        full_name = '{} {}'.format(self.first_name, self.last_name)
         return full_name.strip()
 
     def get_short_name(self):
@@ -114,6 +81,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __unicode__(self):
         return self.get_full_name()
+
+    def __repr__(self):
+        return "<usr.User(national_id='{}', first_name='{}', last_name='{}," \
+               "email='{}', picture='{}', is_staff='{}', is_active='{}'," \
+               " date_joined='{}')>".format(
+            self.national_id, self.first_name, self.last_name, self.email,
+            self.picture.url, self.is_staff, self.is_active, self.date_joined)
 
     class Meta:
         verbose_name = _('user')
@@ -157,3 +131,17 @@ class UserProfile(models.Model):
                                            choices=ACQUAINTANCE_WAY_CHOICES,
                                            default=WEBSITE, null=True,
                                            blank=True)
+
+    def __unicode__(self):
+        return "{}'s Profile".format(self.user.full_name)
+
+    def __repr__(self):
+        return "<usr.UserProfile(user='{}', gender='{}', fathers_name='{}', " \
+               "birth_date='{}', phone_number='{}', home_phone='{}', " \
+               "home_address='{}', acquaintance_way='{}', description='{}')>"\
+            .format(self.user, dict(UserProfile.GENDER_CHOICES).get(self.gender,
+                                                                    "Unknown"),
+                    self.fathers_name, self.birth_date, self.phone_number,
+                    self.home_phone, self.home_address,
+                    dict(UserProfile.ACQUAINTANCE_WAY_CHOICES).get(
+                        self.acquaintance_way), self.description)
