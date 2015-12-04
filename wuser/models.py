@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.conf import settings
 from wuser.storage import OverwriteStorage
 from wuser.validators import national_id_validator
-from wuser.hooks import profile_picture_path_hook
+from wuser.hooks import ProfilePicturePathHook
 
 
 class Group(MasterGroup):
@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30)
     email = models.EmailField(_('email address'), )
     picture = models.ImageField(_('profile picture'),
-                                upload_to=profile_picture_path_hook,
+                                upload_to=ProfilePicturePathHook("avatars"),
                                 storage=OverwriteStorage(), null=True,
                                 blank=True)
     is_staff = models.BooleanField(_('staff status'), default=False, help_text=

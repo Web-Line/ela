@@ -12,5 +12,3 @@ class ProfilePicturePathHook(object):
         filename = '{}.{}'.format(instance.id, ext)
         # return the whole path to the file
         return os.path.join(self.path, filename)
-
-profile_picture_path_hook = ProfilePicturePathHook("avatars")
