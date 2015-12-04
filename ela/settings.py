@@ -162,8 +162,9 @@ INSTALLED_APPS = [
 
     # project
     "ela",
-    "wuser",
+    "usr",
     "edu",
+    "rolepermissions"
 ]
 
 # A sample logging configuration. The only tangible logging
@@ -244,9 +245,11 @@ STATIC_PRECOMPILER_COMPILERS = (
     'static_precompiler.compilers.LESS',
 )
 
-AUTH_USER_MODEL = 'wuser.User'
+AUTH_USER_MODEL = 'usr.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+ROLEPERMISSIONS_MODULE = 'usr.roles'
 
 ACCOUNT_OPEN_SIGNUP = True
 ACCOUNT_EMAIL_UNIQUE = True
