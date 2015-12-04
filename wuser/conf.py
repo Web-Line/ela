@@ -14,11 +14,13 @@ def create_notice_types(sender, **kwargs):
     """
     if "pinax.notifications" in settings.INSTALLED_APPS:
         from pinax.notifications.models import NoticeType
-        print "Creating notices for myapp"
-        NoticeType.create("signup_user", _("User Signup"), _("an user join to ela"))
+        logger.debug("Creating notices for ela")
+        NoticeType.create("signup_user", _("User Signup"),
+                          _("an user join to ela"))
     #     ... for more notice type
     else:
-        print "Skipping creation of NoticeTypes as notification app not found"
+        logger.debug("Skipping creation of NoticeTypes as notification app not "
+                     "found")
 
 
 def handle_post_migrate(sender, **kwargs):
