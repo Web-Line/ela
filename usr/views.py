@@ -25,8 +25,8 @@
 
 from account.views import (SignupView as AccountSignupView,
                            LoginView as AccountLoginView)
-from wuser.forms import SignupForm
-from wuser.models import UserProfile, User
+from usr.forms import SignupForm
+from usr.models import UserProfile, User
 from account import signals
 from pinax.notifications.models import send
 

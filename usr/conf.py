@@ -45,4 +45,4 @@ class WUserAppConfig(AppConfig):
 
     def ready(self):
         post_migrate.connect(handle_post_migrate, sender=self)
-        from wuser.signals import handle_user_logged_in
+        from usr.signals import handle_user_logged_in

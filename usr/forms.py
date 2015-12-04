@@ -1,10 +1,10 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 from django.utils.translation import ugettext_lazy as _
-from wuser.models import UserProfile
+from usr.models import UserProfile
 from django.core.validators import RegexValidator
 import account.forms
-from wuser.validators import national_id_validator
+from usr.validators import national_id_validator
 
 
 class SignupForm(account.forms.SignupForm):

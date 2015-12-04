@@ -7,9 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
 from django.utils import timezone
 from django.conf import settings
-from wuser.storage import OverwriteStorage
-from wuser.validators import national_id_validator
-from wuser.hooks import ProfilePicturePathHook
+from usr.storage import OverwriteStorage
+from usr.validators import national_id_validator
+from usr.hooks import ProfilePicturePathHook
 
 
 class Group(MasterGroup):
@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
         if not national_id:
             raise ValueError('Users must provide a national id')
 
-        user = self.model(national_id=national_id, first_name=first_name,
+        user = self.model(national_id=str(national_id), first_name=first_name,
                           last_name=last_name, email=email)
 
         user.set_password(password)

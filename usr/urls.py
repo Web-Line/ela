@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from wuser import views
+from usr import views
 
 #
 # urlpatterns = [
@@ -9,7 +9,7 @@ from wuser import views
 # ]
 
 from django.conf.urls import url
-from wuser.views import (SignupView, LoginView)
+from usr.views import (SignupView, LoginView)
 
 
 urlpatterns = [

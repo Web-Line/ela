@@ -1,6 +1,6 @@
 from django.dispatch import receiver
 from account.signals import user_logged_in
-from wuser.views import LoginView
+from usr.views import LoginView
 import logging
 
 logger = logging.getLogger("ela")
