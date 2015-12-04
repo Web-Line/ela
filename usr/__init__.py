@@ -1,1 +1,1 @@
-default_app_config = 'wuser.conf.WUserAppConfig'
+default_app_config = 'usr.conf.WUserAppConfig'

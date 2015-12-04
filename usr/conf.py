@@ -40,7 +40,7 @@ def handle_post_migrate(sender, **kwargs):
 
 
 class WUserAppConfig(AppConfig):
-    name = 'wuser'
+    name = 'usr'
     verbose_name = _("Authentication")
 
     def ready(self):
