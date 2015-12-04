@@ -8,3 +8,4 @@ django-suit==0.3a1
 django-role-permissions
 pillow
 mysqlclient==1.3.7
+pinax-notifications==3.0.0

@@ -7,6 +7,20 @@ import logging
 
 logger = logging.getLogger("ela")
 
+
+def create_notice_types(sender, **kwargs):
+    """
+    define NoticeType for this app
+    """
+    if "pinax.notifications" in settings.INSTALLED_APPS:
+        from pinax.notifications.models import NoticeType
+        print "Creating notices for myapp"
+        NoticeType.create("signup_user", _("User Signup"), _("an user join to ela"))
+    #     ... for more notice type
+    else:
+        print "Skipping creation of NoticeTypes as notification app not found"
+
+
 def handle_post_migrate(sender, **kwargs):
     """
     It sets up a superuser when DEBUG is True.
@@ -19,6 +33,8 @@ def handle_post_migrate(sender, **kwargs):
     if settings.DEBUG and kwargs['interactive']:
         get_user_model().objects.create_superuser(123, "arc", "Karami",
                                                             "arc@arc.ir", 123)
+    #
+    create_notice_types(sender)
 
 
 class WUserAppConfig(AppConfig):

@@ -26,15 +26,24 @@
 from account.views import (SignupView as AccountSignupView,
                            LoginView as AccountLoginView)
 from wuser.forms import SignupForm
-from wuser.models import UserProfile
+from wuser.models import UserProfile, User
 from account import signals
+from pinax.notifications.models import send
 
 import logging
 
 logger = logging.getLogger("ela")
 
+
 class SignupView(AccountSignupView):
     form_class = SignupForm
+
+    def create_user(self, form, commit=True, **kwargs):
+        user = super(SignupView, self).create_user(form,  commit=False, **kwargs)
+        user.national_id = form.cleaned_data['username']
+        if commit:
+            user.save()
+        return user
 
     def update_profile(self, form):
         UserProfile.objects.create(
@@ -45,6 +54,8 @@ class SignupView(AccountSignupView):
 
     def after_signup(self, form):
         self.update_profile(form)
+        admin = User.objects.filter(is_superuser=True)
+        # send([admin], "signup_user")
         super(SignupView, self).after_signup(form)
 
 
