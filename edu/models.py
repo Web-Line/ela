@@ -1,17 +1,19 @@
-# from datetime import datetime
-# from django.utils.timezone import now
+from datetime import datetime
+from django.utils.timezone import now
+
 from datetime import datetime
 
 from django.core.validators import MinValueValidator as Min
 from django.db import models
-# from django.core.validators import ValidationError
+from django.core.validators import ValidationError
 from django.conf import settings
 # from django.template.defaultfilters import filesizeformat
 # from django.utils.html import format_html
 # from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from wuser.roles import Student
+from usr.roles import Student
 # from django.core.validators import MaxValueValidator
+from usr.proxy_models import (Student, Teacher)
 
 
 class Edu(models.Model):
@@ -62,9 +64,8 @@ class Edu(models.Model):
     #         return last_level
 
 
-
 class Level(models.Model):
-    edu = models.ForeignKey(Edu,verbose_name=_("education system"))
+    edu = models.ForeignKey(Edu, verbose_name=_("education system"))
     name = models.CharField(_("name"), max_length=30)
     index = models.IntegerField(_("index"), validators=[Min(0)])
     tuition = models.FloatField(_("tuition"), null=True, blank=True)
@@ -120,36 +121,36 @@ class Room(models.Model):
 
 class TermReservationManager(models.Manager):
     def get_queryset(self):
-        return super(TermReservationManager, self).get_queryset().\
+        return super(TermReservationManager, self).get_queryset(). \
             filter(start__isnull=False, start__gte=datetime.now())
 
 
 class Term(models.Model):
     level = models.ForeignKey(Level)
-    # teacher = models.ForeignKey(Teacher, related_name="teacher",
-    #                             related_query_name="term")
+    teacher = models.ForeignKey(Teacher, related_name="teacher",
+                                related_query_name="term")
     students = models.ManyToManyField(Student, related_query_name="term")
     room = models.ForeignKey(Room, default=1)
 
-#     NO_SESSION = 1
-#     RESERVE = 2
-#     ACTIVE = 3
-#     INACTIVE = 4
-#     TERM_STATUS = {
-#         NO_SESSION: 'No Session',
-#         RESERVE: 'Reservation',
-#         ACTIVE: 'Active',
-#         INACTIVE: 'Inactive',
-#     }
-#     start = models.DateTimeField(null=True)
-#     end = models.DateTimeField(null=True)
-#     tuition = models.FloatField(null=True, blank=True)
-#
-#     objects = models.Manager()
-#     reservation = TermReservationManager()
-#
-#     def __unicode__(self):
-#         return self.level.name
+    NO_SESSION = 1
+    RESERVE = 2
+    ACTIVE = 3
+    INACTIVE = 4
+    TERM_STATUS = {
+        NO_SESSION: 'No Session',
+        RESERVE: 'Reservation',
+        ACTIVE: 'Active',
+        INACTIVE: 'Inactive',
+    }
+    start = models.DateTimeField(null=True)
+    end = models.DateTimeField(null=True)
+    tuition = models.FloatField(null=True, blank=True)
+
+    objects = models.Manager()
+    reservation = TermReservationManager()
+
+    def __unicode__(self):
+        return self.level.name
 
 #     def get_teacher_name(self):
 #         return self.teacher.get_full_name
@@ -226,21 +227,23 @@ class Term(models.Model):
 #         super(Term, self).save(*args, **kwargs)
 #         # self.level.profit = self.level.supposed_profit()
 #         # self.level.save()
-#
-#
-# class Session(models.Model):
-#     term = models.ForeignKey(Term, related_name="sessions", related_query_name="term", null=True)
-#     start = models.DateTimeField()
-#     end = models.DateTimeField()
-#     absents = models.ManyToManyField(Student, related_query_name="session", null=True, blank=True)
-#     is_exam = models.BooleanField(default=False)
-#     canceled = models.BooleanField(default=False)
-#
-#     def save(self, *args, **kwargs):
-#         super(Session, self).save(*args, **kwargs)
-#         self.term.set_start_and_end()
-#
-#
+
+
+class Session(models.Model):
+    term = models.ForeignKey(Term, related_name="sessions",
+                             related_query_name="term", null=True)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    absents = models.ManyToManyField(Student, related_query_name="session",
+                                     blank=True)
+    is_exam = models.BooleanField(default=False)
+    canceled = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        super(Session, self).save(*args, **kwargs)
+        self.term.set_start_and_end()
+
+
 # class StudentResume(models.Model):
 #     student = models.ForeignKey(Student)
 #     term = models.ForeignKey(Term)
