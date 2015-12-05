@@ -1,0 +1,4 @@
+tinymce configuration
+mptt configuration
+setting up edu/models.py
+setting up crm
