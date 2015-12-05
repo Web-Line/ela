@@ -141,8 +141,6 @@ MIDDLEWARE_CLASSES = [
 ]
 
 INSTALLED_APPS = [
-    "suit",
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
@@ -150,6 +148,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.staticfiles",
 
+    # pinax specific
     # theme
     "bootstrapform",
     "pinax_theme_bootstrap",
@@ -160,10 +159,19 @@ INSTALLED_APPS = [
     "pinax.eventlog",
     "pinax.notifications",
 
+    # Third party appd
+    "suit",
+    'tinymce',
+    'mptt',
+    'django_extensions',
+
     # project
     "ela",
     "usr",
     "edu",
+
+    # Admin comes last so our apps can override some templates
+    "django.contrib.admin",
 ]
 
 # A sample logging configuration. The only tangible logging
