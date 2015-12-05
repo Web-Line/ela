@@ -87,7 +87,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                "email='{}', picture='{}', is_staff='{}', is_active='{}'," \
                " date_joined='{}')>".format(
             self.national_id, self.first_name, self.last_name, self.email,
-            self.picture.url, self.is_staff, self.is_active, self.date_joined)
+            self.picture, self.is_staff, self.is_active, self.date_joined)
 
     class Meta:
         verbose_name = _('user')
