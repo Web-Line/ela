@@ -32,7 +32,7 @@ class SignupView(AccountSignupView):
         )
 
     def after_signup(self, form):
-        logger.debut("form={}".format(form))
+        logger.debug("form={}".format(form))
 
         self.update_profile(form)
         admin = User.objects.filter(is_superuser=True)
