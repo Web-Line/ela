@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
-from usr.managers import (StudentManager, TeacherManager, SupervisorManager)
+from ela.managers import (StudentManager, TeacherManager, SupervisorManager)
 from usr.models import User
 
 
