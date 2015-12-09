@@ -13,9 +13,16 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        os.pardir
+    )
+)
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
+PACKAGE_ROOT = os.path.abspath(
+    os.path.dirname(__file__)
+)
 BASE_DIR = PACKAGE_ROOT
 
 DEBUG = True
@@ -42,7 +49,6 @@ SITE_ID = int(os.environ.get("SITE_ID", 1))
 ROOT_URLCONF = 'ela.urls'
 
 WSGI_APPLICATION = 'ela.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -149,29 +155,28 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     # pinax specific
-    # theme
     "bootstrapform",
     "pinax_theme_bootstrap",
-
-    # external
-    "account",
-    "metron",
-    "pinax.eventlog",
-    "pinax.notifications",
-
-    # Third party appd
-    "suit",
-    'tinymce',
-    'mptt',
-    'django_extensions',
 
     # project
     "ela",
     "usr",
     "edu",
+    "crm",
+
+    # external
+    "suit",
+    "pinax.eventlog",
+    "pinax.notifications",
+    "account",
+    "metron",
+    "tinymce",
+    "mptt",
+    "django_extensions",
 
     # Admin comes last so our apps can override some templates
     "django.contrib.admin",
+
 ]
 
 # A sample logging configuration. The only tangible logging
@@ -184,24 +189,24 @@ LOGGING = {
     "disable_existing_loggers": False,
     'formatters': {
         'verbose': {
-            'format': '[Name:%(name)s] '
-                      '[Time:%(asctime)s] '
-                      '[Process:%(process)d] '
-                      '[Thread:%(thread)d] '
-                      '[Level:%(levelname)s] '
-                      '[Module:%(module)s] '
-                      '[Func:%(funcName)s] '
-                      '[Line:%(lineno)d] '
-                      '[Message:%(message)s] ',
+            'format':
+                '[Name:%(name)s] '
+                '[Time:%(asctime)s] '
+                '[Process:%(process)d] '
+                '[Thread:%(thread)d] '
+                '[Level:%(levelname)s] '
+                '[Module:%(module)s] '
+                '[Func:%(funcName)s] '
+                '[Line:%(lineno)d] '
+                '[Message:%(message)s] ',
         },
-        'semi_verbose': {
-            'format': '[%(name)s] '
-                      '[Time:%(asctime)s] '
-                      '[Level:%(levelname)s] '
-                      '[Module:%(module)s] '
-                      '[Func:%(funcName)s] '
-                      '[Line:%(lineno)d] '
-                      '[Message:%(message)s] ',
+        'semi-verbose': {
+            'format':
+                '[Time:%(asctime)s] '
+                '[Module:%(module)s] '
+                '[Func:%(funcName)s] '
+                '[Line:%(lineno)d] '
+                '[Message:%(message)s] ',
         },
         'simple': {
             'format': '[%(message)s]',
@@ -213,12 +218,18 @@ LOGGING = {
         }
     },
     "handlers": {
-        "mail_admins": {
+        "mail-admins": {
             "level": "ERROR",
             "filters": ["require_debug_false"],
             "class": "django.utils.log.AdminEmailHandler"
         },
-        'file': {
+        'file-semi-verbose': {
+            'level': 'DEBUG',
+            'formatter': 'semi-verbose',
+            'class': 'logging.FileHandler',
+            'filename': 'message.log',
+        },
+        'file-verbose': {
             'level': 'DEBUG',
             'formatter': 'verbose',
             'class': 'logging.FileHandler',
@@ -227,18 +238,29 @@ LOGGING = {
         'standard-output': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'semi_verbose'
+            'formatter': 'semi-verbose'
+        },
+        'mysql': {
+            'level': 'DEBUG',
+            'class': 'ela.mysql_handler.MySQLHandler',
+            'formatter': 'verbose'
         },
 
     },
     "loggers": {
         "django.request": {
-            "handlers": ["mail_admins", "file"],
+            "handlers": ["mail-admins", "file-verbose"],
             "level": "ERROR",
             "propagate": True,
         },
         'ela': {
-            'handlers': ['mail_admins', 'file', 'standard-output'],
+            'handlers': [
+                'mail-admins',
+                'file-verbose',
+                'file-semi-verbose',
+                'standard-output',
+                "mysql"
+            ],
             'level': 'DEBUG',
         },
     }
@@ -253,7 +275,7 @@ STATIC_PRECOMPILER_COMPILERS = (
 )
 
 AUTH_USER_MODEL = 'usr.User'
-ROLEPERMISSIONS_MODULE = 'usr.roles'
+ROLEPERMISSIONS_MODULE = 'ela.roles'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
@@ -269,3 +291,10 @@ ACCOUNT_USER_DISPLAY = lambda user: user.full_name
 AUTHENTICATION_BACKENDS = [
     "account.auth_backends.UsernameAuthenticationBackend",
 ]
+
+STUDENT_ROLE_GROUP_NAME = "student"
+TEACHER_ROLE_GROUP_NAME = "teacher"
+SUPERVISOR_ROLE_GROUP_NAME = "supervisor"
+LOGIN_STUDENT_ADMIN_SITE = 'login_student_admin_site'
+LOGIN_TEACHER_ADMIN_SITE = 'login_teacher_admin_site'
+LOGIN_SUPERVISOR_ADMIN_SITE = 'login_supervisor_admin_site'
