@@ -1,4 +1,46 @@
-tinymce configuration
-mptt configuration
-setting up edu/models.py
-setting up crm
+
+# ela Project TODO file
+
+# Syntax policy
+# <user:"mhg"|"alireza"|"webline">    <status:"Progressing"|"Done"|"Fail">
+# <title>
+#    <description>
+#    <description>
+
+
+mhg       Progressing
+Configure ckeditor
+
+mhg       Progressing
+Configure mptt
+
+webline    Progressing
+Setup Education system (edu)
+
+webline    Progressing
+Setup CRM (Customer Relationship Manager)
+
+mhg        Progressing
+Create python management script to setup project.
+    I think having python based setup script is a better idea, we can do more in python than bash, making things more
+    configurable and more dynamic.
+
+mhg        Progressing
+Write test module
+    for ela authentication system, testing AdminAuthenticationForm(s) is necesssary.
+
+mhg        Done
+Setup fixtures
+    for User/Group/Permission models, to make development easier
+
+alireza     Progressing
+Clean up and move notification module
+    from old-ela to master branch.
+
+mhg        Done
+Setup ela admin sites
+    for each user type.
+
+mhg        Done
+Setup urls
+    for login into admin sites.
