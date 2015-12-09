@@ -1,76 +1,56 @@
-from django.db import models
-from usr.roles import (Student, Teacher, Supervisor)
-from django.contrib.auth.models import BaseUserManager
 import logging
+
+from django.contrib.auth.models import BaseUserManager
+from django.utils import timezone
 
 logger = logging.getLogger("ela")
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, national_id, first_name, last_name, email,
-                    password=None):
+    use_in_migrations = True
+
+    def _create_user(self, national_id, first_name, last_name, email, password,
+                     is_staff, is_superuser, **extra_fields):
         """
-        Creates and saves a User with the given email, date of
-        birth and password.
+        Creates and saves a User with the given national_id, email and password.
         """
         logger.debug(
-            "national_id='{}', first_name='{}', last_name='{}', email='{}',"
-            " password='{}'".format(national_id, first_name, last_name, email,
-                                    password))
+            "national_id='{}', "
+            "first_name='{}', "
+            "last_name='{}', "
+            "email='{}', "
+            "is_staff='{}', "
+            "is_superuser='{}', "
+            "kwargs='{}'".format(
+                national_id,
+                first_name,
+                last_name,
+                email,
+                is_staff,
+                is_superuser,
+                extra_fields,
+            )
+        )
+        now = timezone.now()
         if not national_id:
-            raise ValueError('Users must provide a national id')
-
-        user = self.model(national_id=str(national_id), first_name=first_name,
-                          last_name=last_name, email=email)
-
+            raise ValueError('The given national_id must be set')
+        email = self.normalize_email(email)
+        user = self.model(national_id=str(national_id), email=email,
+                          is_staff=is_staff, is_active=False,
+                          is_superuser=is_superuser,
+                          date_joined=now, **extra_fields)
         user.set_password(password)
-        user.is_admin = False
         user.save(using=self._db)
         return user
+
+    def create_user(self, national_id, first_name, last_name, email, password,
+                    **extra_fields):
+
+        return self._create_user(national_id, first_name, last_name,
+                                 email, password, False, False, **extra_fields)
 
     def create_superuser(self, national_id, first_name, last_name, email,
-                         password):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
+                         password, **extra_fields):
 
-        logger.debug(
-            "national_id='{}', first_name='{}', last_name='{}', email='{}',"
-            " password='{}'".format(national_id, first_name, last_name, email,
-                                    password))
-
-        user = self.create_user(national_id, first_name=first_name,
-                                last_name=last_name, email=email,
-                                password=password)
-        user.is_admin, user.is_staff, user.is_superuser = True, True, True
-        user.save(using=self._db)
-        # user.confirm_email(user.confirmation_key)
-        return user
-
-
-class StudentManager(models.Manager):
-    def get_queryset(self):
-        """
-        Filter user with have student role.
-        """
-        return super(StudentManager, self).get_queryset().filter(
-            groups__name=Student.get_name())
-
-
-class TeacherManager(models.Manager):
-    def get_queryset(self):
-        """
-        Filter user with have teacher role.
-        """
-        return super(TeacherManager, self).get_queryset().filter(
-            groups__name=Teacher.get_name())
-
-
-class SupervisorManager(models.Manager):
-    def get_queryset(self):
-        """
-        Filter user with have supervisor manager role.
-        """
-        return super(SupervisorManager, self).get_queryset().filter(
-            groups__name=Supervisor.get_name())
+        return self._create_user(national_id, first_name, last_name,
+                                 email, password, True, True, **extra_fields)
