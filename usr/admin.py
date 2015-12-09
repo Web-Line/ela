@@ -1,9 +1,12 @@
-# from django.contrib import admin
+from __future__ import unicode_literals
 from django import forms
 from usr.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin
+from ela.sites import main_admin_site
+from account.models import Account, SignupCode, AccountDeletion, EmailAddress
 
 
 class UserCreationForm(forms.ModelForm):
@@ -12,7 +15,7 @@ class UserCreationForm(forms.ModelForm):
     """
     error_messages = {
         'password_mismatch': _("The two password fields didn't match."),
-        }
+    }
     password1 = forms.CharField(label=_("Password"),
                                 widget=forms.PasswordInput)
     password2 = forms.CharField(label=_("Password confirmation"),
@@ -35,7 +38,7 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError(
                 self.error_messages['password_mismatch'],
                 code='password_mismatch',
-                )
+            )
         return password2
 
     def save(self, commit=True):
@@ -47,11 +50,12 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField(label=_("Password"),
-                                         help_text=_(
-                                             "Raw passwords are not stored, so there is no way to see "
-                                             "this user's password, but you can change the password "
-                                             "using <a href=\"password/\">this form</a>."))
+    password = ReadOnlyPasswordHashField(
+        label=_("Password"),
+        help_text=_(
+            "Raw passwords are not stored, so there is no way to see "
+            "this user's password, but you can change the password "
+            "using <a href=\"password/\">this form</a>."))
 
     class Meta:
         model = User
@@ -66,7 +70,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
-class WUserAdmin(UserAdmin):
+class UsrAdmin(UserAdmin):
     # change_user_password_template = None  # TODO: add reset user password feature
     form = UserChangeForm
     add_form = UserCreationForm
@@ -80,7 +84,7 @@ class WUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': ('national_id', 'first_name', 'last_name', 'email',
                        'password1', 'password2'),
-            }),
+        }),
     )
     fieldsets = (
         (None, {
@@ -106,4 +110,30 @@ class WUserAdmin(UserAdmin):
     filter_horizontal = ()
     readonly_fields = ['last_login']
 
-# admin.site.register(User, WUserAdmin)
+
+class SignupCodeAdmin(admin.ModelAdmin):
+    list_display = ["code", "max_uses", "use_count", "expiry", "created"]
+    search_fields = ["code", "email"]
+    list_filter = ["created"]
+    raw_id_fields = ["inviter"]
+
+
+class AccountAdmin(admin.ModelAdmin):
+    raw_id_fields = ["user"]
+
+
+class AccountDeletionAdmin(AccountAdmin):
+    list_display = ["email", "date_requested", "date_expunged"]
+
+
+class EmailAddressAdmin(AccountAdmin):
+    list_display = ["user", "email", "verified", "primary"]
+    search_fields = ["email", "user__username"]
+    list_filter = ["user"]
+
+
+main_admin_site.register(User, UsrAdmin)
+main_admin_site.register(Account, AccountAdmin)
+main_admin_site.register(SignupCode, SignupCodeAdmin)
+main_admin_site.register(AccountDeletion, AccountDeletionAdmin)
+main_admin_site.register(EmailAddress, EmailAddressAdmin)
