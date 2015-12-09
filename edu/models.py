@@ -1,24 +1,26 @@
-from django.core.validators import (MinValueValidator as Min,
-                                    MaxValueValidator as Max)
-from django.db import models
-from django.conf import settings
 import datetime
 from itertools import groupby, chain
-from django.template.defaultfilters import filesizeformat
-from django.utils.html import format_html
+
+from django.conf import settings
+from django.core.validators import (MaxValueValidator as Max)
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from usr.proxy_models import (Student, Teacher)
-from edu.templatetags.file_icon import icon_type
 from edu.managers import CourseReservationManager
+from ela.proxy_models import (Student, Teacher)
 from tinymce import models as tinymce_models
 
 
-
 class Edu(models.Model):
-    name = models.CharField(_("name"), max_length=30)
-    language = models.CharField(_("language"), max_length=30,
-                                choices=settings.EDU_LANGUAGES,
-                                default=settings.EDU_DEFAULT_LANGUAGE)
+    name = models.CharField(
+        _("name"),
+        max_length=30
+    )
+    language = models.CharField(
+        _("language"),
+        max_length=30,
+        choices=settings.EDU_LANGUAGES,
+        default=settings.EDU_DEFAULT_LANGUAGE
+    )
 
     class Meta():
         verbose_name = "Education System"
@@ -64,15 +66,19 @@ class Edu(models.Model):
 
 
 class Semester(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(
+        max_length=200
+    )
     year = models.IntegerField()
     start = models.DateField()
     end = models.DateField()
 
     @classmethod
     def get_current(cls):
-        return cls.objects.filter(start__lte=datetime.date.today(),
-                                  end__gte=datetime.date.today())[0]
+        return cls.objects.filter(
+            start__lte=datetime.date.today(),
+            end__gte=datetime.date.today()
+        )[0]
 
     def get_events(self, course_set=False):
         # Create a dictionary of months in the semester that contains
@@ -137,12 +143,27 @@ class Semester(models.Model):
 
 
 class Grade(models.Model):
-    edu = models.CharField(_("education system"), max_length=30)
-    name = models.CharField(_("name"), max_length=30)
-    index = models.PositiveSmallIntegerField(_("index"))
-    tuition = models.FloatField(_("tuition"), null=True, blank=True)
-    capacity = models.PositiveSmallIntegerField(_("capacity"), null=True,
-                                                blank=True)
+    edu = models.CharField(
+        _("education system"),
+        max_length=30
+    )
+    name = models.CharField(
+        _("name"),
+        max_length=30
+    )
+    index = models.PositiveSmallIntegerField(
+        _("index")
+    )
+    tuition = models.FloatField(
+        _("tuition"),
+        null=True,
+        blank=True
+    )
+    capacity = models.PositiveSmallIntegerField(
+        _("capacity"),
+        null=True,
+        blank=True
+    )
 
     def no_of_courses(self):
         return Course.objects.filter(grade=self).count()
@@ -155,22 +176,39 @@ class Grade(models.Model):
 
 
 class Course(models.Model):
-    grade = models.ForeignKey(Grade)
-    number = models.CharField(max_length=10)
-    title = models.CharField(max_length=200)
-
-    teacher = models.ForeignKey(Teacher, related_name="teacher",
-                                related_query_name="course")
+    grade = models.ForeignKey(
+        Grade
+    )
+    number = models.CharField(
+        max_length=10
+    )
+    title = models.CharField(
+        max_length=200
+    )
+    teacher = models.ForeignKey(
+        Teacher,
+        related_name="teacher",
+        related_query_name="course"
+    )
     teaching_assistants = models.ManyToManyField(
-        Teacher, related_name=_('assistant'))
-
-    members = models.ManyToManyField(Student, related_query_name="course")
-
-    semester = models.ForeignKey(Semester)
-    exam = models.DateTimeField(null=True)
-    location = models.CharField(null=True, max_length=150)
-
-    private = models.BooleanField(default=False, blank=True)
+        Teacher,
+        related_name=_('assistant')
+    )
+    members = models.ManyToManyField(
+        Student,
+        related_query_name="course"
+    )
+    semester = models.ForeignKey(
+        Semester
+    )
+    exam = models.DateTimeField(
+        null=True
+    )
+    location = models.CharField(
+        null=True,
+        max_length=150
+    )
+    # private = models.BooleanField(default=False, blank=True)
 
     objects = models.Manager()
     reservation = CourseReservationManager()
@@ -242,15 +280,25 @@ class Course(models.Model):
 
 
 class Session(models.Model):
-    course = models.ForeignKey(Course, related_name="sessions",
-                               related_query_name="course", null=True)
+    course = models.ForeignKey(
+        Course,
+        related_name="sessions",
+        related_query_name="course",
+        null=True
+    )
     date = models.DateField()
     start = models.TimeField()
     end = models.TimeField()
-    location = models.CharField(null=True, max_length=150)
+    location = models.CharField(
+        null=True,
+        max_length=150
+    )
+    absents = models.ManyToManyField(
+        Student,
+        related_query_name="session",
+        blank=True
+    )
 
-    # absents = models.ManyToManyField(Student, related_query_name="session",
-    #                                  blank=True)
     # canceled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -259,15 +307,29 @@ class Session(models.Model):
 
 
 class Transcript(models.Model):
-    student = models.ForeignKey(Student)
-    course = models.ForeignKey(Course)
-    reading = models.PositiveSmallIntegerField(validators=[Max(25)])
-    speaking = models.PositiveSmallIntegerField(validators=[Max(25)])
-    writing = models.PositiveSmallIntegerField(validators=[Max(25)])
-    class_activity = models.PositiveSmallIntegerField(validators=[Max(25)])
+    student = models.ForeignKey(
+        Student
+    )
+    course = models.ForeignKey(
+        Course
+    )
+    reading = models.PositiveSmallIntegerField(
+        validators=[Max(25)]
+    )
+    speaking = models.PositiveSmallIntegerField(
+        validators=[Max(25)]
+    )
+    writing = models.PositiveSmallIntegerField(
+        validators=[Max(25)]
+    )
+    class_activity = models.PositiveSmallIntegerField(
+        validators=[Max(25)]
+    )
 
     # I should make sure about auto_now argument exact behavior.
-    submit_date = models.DateTimeField(auto_now=True)
+    submit_date = models.DateTimeField(
+        auto_now=True
+    )
 
     def total(self):
         return self.reading + self.writing + self.speaking + self.class_activity
@@ -340,16 +402,29 @@ class Placement(models.Model):
 
 
 class Resource(models.Model):
-    course = models.ForeignKey(Course)
-    title = models.CharField(max_length=200)
-    link = models.URLField(blank=True)
-    file = models.FileField(upload_to='resources/%Y/%m/%d', blank=True)
-    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
-                                  blank=True)
+    course = models.ForeignKey(
+        Course
+    )
+    title = models.CharField(
+        max_length=200
+    )
+    link = models.URLField(
+        blank=True
+    )
+    file = models.FileField(
+        upload_to='resources/%Y/%m/%d',
+        blank=True
+    )
+    upload_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True
+    )
     description = tinymce_models.HTMLField()
 
     def __unicode__(self):
         return self.title
+
 
 # class Material(models.Model):
 #     name = models.CharField(max_length=254, unique=True)
@@ -384,9 +459,18 @@ class Resource(models.Model):
 #
 
 class Room(models.Model):
-    name = models.CharField(max_length=30, unique=True, null=False, blank=False)
-    capacity = models.PositiveSmallIntegerField(null=True)
-    equipments = models.TextField(max_length=250)
+    name = models.CharField(
+        max_length=30,
+        unique=True,
+        null=False,
+        blank=False
+    )
+    capacity = models.PositiveSmallIntegerField(
+        null=True
+    )
+    equipments = models.TextField(
+        max_length=250
+    )
 
     def __unicode__(self):
         return self.name
