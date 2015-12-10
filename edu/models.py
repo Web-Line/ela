@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from edu.managers import CourseReservationManager
 from ela.proxy_models import (Student, Teacher)
 from tinymce import models as tinymce_models
+from ckeditor.fields import RichTextField
 
 
 class Edu(models.Model):
@@ -20,6 +21,10 @@ class Edu(models.Model):
         max_length=30,
         choices=settings.EDU_LANGUAGES,
         default=settings.EDU_DEFAULT_LANGUAGE
+    )
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
     )
 
     class Meta():
@@ -72,6 +77,10 @@ class Semester(models.Model):
     year = models.IntegerField()
     start = models.DateField()
     end = models.DateField()
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
+    )
 
     @classmethod
     def get_current(cls):
@@ -164,6 +173,10 @@ class Grade(models.Model):
         null=True,
         blank=True
     )
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
+    )
 
     def no_of_courses(self):
         return Course.objects.filter(grade=self).count()
@@ -207,6 +220,10 @@ class Course(models.Model):
     location = models.CharField(
         null=True,
         max_length=150
+    )
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
     )
     # private = models.BooleanField(default=False, blank=True)
 
@@ -298,7 +315,10 @@ class Session(models.Model):
         related_query_name="session",
         blank=True
     )
-
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
+    )
     # canceled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -325,10 +345,13 @@ class Transcript(models.Model):
     class_activity = models.PositiveSmallIntegerField(
         validators=[Max(25)]
     )
-
     # I should make sure about auto_now argument exact behavior.
     submit_date = models.DateTimeField(
         auto_now=True
+    )
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
     )
 
     def total(self):
@@ -357,6 +380,10 @@ class Placement(models.Model):
     grade = models.ForeignKey(Grade)
     examiner = models.ForeignKey(Teacher, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
+    )
 
     def student_name(self):
         return self.student.get_full_name
@@ -421,6 +448,10 @@ class Resource(models.Model):
         blank=True
     )
     description = tinymce_models.HTMLField()
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
+    )
 
     def __unicode__(self):
         return self.title
@@ -470,6 +501,10 @@ class Room(models.Model):
     )
     equipments = models.TextField(
         max_length=250
+    )
+    comment = RichTextField(
+        _("comment"),
+        max_length=1024,
     )
 
     def __unicode__(self):
