@@ -63,7 +63,3 @@ target/
 static/
 media/
 node_modules/
-suit
-django
-account
-cms
