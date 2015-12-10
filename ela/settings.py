@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.utils.translation import ugettext_lazy as _
 
 PROJECT_ROOT = os.path.abspath(
     os.path.join(
@@ -106,6 +107,7 @@ STATICFILES_DIRS = [
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "djangobower.finders.BowerFinder", # added for schedule
 ]
 
 # Make this unique, and don't share it with anybody.
@@ -131,20 +133,30 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "account.context_processors.account",
                 "pinax_theme_bootstrap.context_processors.theme",
+                'sekizai.context_processors.sekizai',
+                'cms.context_processors.cms_settings',
             ],
         },
     },
 ]
 
 MIDDLEWARE_CLASSES = [
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
     "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'cms.middleware.utils.ApphookReloadMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
 ]
+
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -171,13 +183,55 @@ INSTALLED_APPS = [
     "account",
     "metron",
     "tinymce",
+    "ckeditor",
+    "ckeditor_uploader",
     "mptt",
     "django_extensions",
 
+    'schedule', # full calendar integeration npm install -g bower
+    'djangobower', # schedule dependency
+
+    # cms
+    'cms',  # django CMS itself
+    'treebeard',  # utilities for implementing a tree
+    'menus',  # helper for model independent hierarchical website navigation
+    'sekizai',  # for JavaScript and CSS management
+    'djangocms_admin_style',  # for the admin skin. You **must** add 'djangocms_admin_style' in the list **before** 'django.contrib.admin'.
+    'djangocms_file',
+    'djangocms_googlemap',
+    'djangocms_inherit',
+    'djangocms_picture',
+    'djangocms_teaser',
+    'djangocms_video',
+    'djangocms_link',
+    'djangocms_snippet',
+    "djangocms_text_ckeditor",
+    "reversion",
+
     # Admin comes last so our apps can override some templates
+    'todo', # simple todo app for
+    "rolepermissions",
     "django.contrib.admin",
 
 ]
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
+BOWER_COMPONENTS_ROOT = os.path.join(
+    PACKAGE_ROOT,
+    'component'
+)
+
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('fa-ir', 'Farsi')
+]
+
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'bootstrap'
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -274,6 +328,102 @@ STATIC_PRECOMPILER_COMPILERS = (
     'static_precompiler.compilers.LESS',
 )
 
+CMS_PLACEHOLDER_CONF = {
+    'content': {
+        'name' : _('Content'),
+        'plugins': ['TextPlugin', 'LinkPlugin'],
+        'default_plugins':[
+            {
+                'plugin_type':'TextPlugin',
+                'values':{
+                    'body':'<p>Great websites : %(_tag_child_1)s and %(_tag_child_2)s</p>'
+                },
+                'children':[
+                    {
+                        'plugin_type':'LinkPlugin',
+                        'values':{
+                            'name':'django',
+                            'url':'https://www.djangoproject.com/'
+                        },
+                    },
+                    {
+                        'plugin_type':'LinkPlugin',
+                        'values':{
+                            'name':'django-cms',
+                            'url':'https://www.django-cms.org'
+                        },
+                    },
+                ]
+            },
+        ]
+    }
+}
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'moono',
+        # 'skin': 'office2013',
+        'toolbar_Basic': [
+            ['Source', '-', 'Bold', 'Italic']
+        ],
+        'toolbar_YouCustomToolbarConfig': [
+            {'name': 'document', 'items': ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
+            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll']},
+            {'name': 'forms',
+             'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton',
+                       'HiddenField']},
+            '/',
+            {'name': 'basicstyles',
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
+            {'name': 'paragraph',
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
+                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl',
+                       'Language']},
+            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+            {'name': 'insert',
+             'items': ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe']},
+            '/',
+            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'tools', 'items': ['Maximize', 'ShowBlocks']},
+            {'name': 'about', 'items': ['About']},
+            '/',  # put this to force next toolbar on new line
+            {'name': 'youcustomtools', 'items': [
+                # put the name of your editor.ui.addButton here
+                'Preview',
+                'Maximize',
+
+            ]},
+        ],
+        'toolbar': 'YouCustomToolbarConfig',  # put selected toolbar config here
+        # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
+        # 'height': 291,
+        # 'width': '100%',
+        # 'filebrowserWindowHeight': 725,
+        # 'filebrowserWindowWidth': 940,
+        # 'toolbarCanCollapse': True,
+        # 'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join(
+            [
+                # you extra plugins here
+                'div',
+                'autolink',
+                'autoembed',
+                'embedsemantic',
+                'autogrow',
+                # 'devtools',
+                'widget',
+                'lineutils',
+                'clipboard',
+                'dialog',
+                'dialogui',
+                'elementspath'
+            ]),
+    }
+}
+
 AUTH_USER_MODEL = 'usr.User'
 ROLEPERMISSIONS_MODULE = 'ela.roles'
 
@@ -298,3 +448,4 @@ SUPERVISOR_ROLE_GROUP_NAME = "supervisor"
 LOGIN_STUDENT_ADMIN_SITE = 'login_student_admin_site'
 LOGIN_TEACHER_ADMIN_SITE = 'login_teacher_admin_site'
 LOGIN_SUPERVISOR_ADMIN_SITE = 'login_supervisor_admin_site'
+
