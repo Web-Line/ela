@@ -18,33 +18,3 @@ django-scheduler
 django-bower
 django-ckeditor
 git+git://github.com/mhhg/django-todo.git#egg=django_todo
-
-# Bare minimum django-cms requirements.
-# http://docs.django-cms.org/en/develop/how_to/install.html
-django-cms>=3.0
-django-treebeard==3.0
-django-sekizai==0.8.2
-django-classy-tags==0.6.2
-djangocms-admin-style==0.2.2
-html5lib==0.999
-six>=1.3.0 # This was six=1.3.0 i changed it. it may make problmes.
-
-# Optional, recommended packages
-django-filer==0.9.9
-cmsplugin-filer==0.10.1
-django-reversion==1.8.5
-
-djangocms-text-ckeditor
-djangocms_googlemap
-djangocms_inherit
-djangocms_picture
-djangocms_video
-djangocms_teaser
-djangocms_file
-djangocms-link
-djangocms-snippet
-djangocms-style
-djangocms-column
-djangocms-grid
-djangocms-oembed
-djangocms-table

@@ -8,7 +8,7 @@ from ela.sites import (main_admin_site, student_admin_site, teacher_admin_site)
 
 urlpatterns = i18n_patterns(
     "",
-    #url(r"^$", TemplateView.as_view(template_name="homepage.html"), name="home"),
+    url(r"^$", TemplateView.as_view(template_name="homepage.html"), name="home"),
     url(r"^admin/", include(main_admin_site.urls), name="admin"),
     url(r"^student/", include(student_admin_site.urls), name="student"),
     url(r"^teacher/", include(teacher_admin_site.urls), name="teacher"),
@@ -17,7 +17,6 @@ urlpatterns = i18n_patterns(
     url(r"^notifications/", include("pinax.notifications.urls")),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^todo/', include('todo.urls')),
-    url(r'^', include('cms.urls')),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -134,7 +134,6 @@ TEMPLATES = [
                 "account.context_processors.account",
                 "pinax_theme_bootstrap.context_processors.theme",
                 'sekizai.context_processors.sekizai',
-                'cms.context_processors.cms_settings',
             ],
         },
     },
@@ -145,16 +144,11 @@ MIDDLEWARE_CLASSES = [
     "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'cms.middleware.utils.ApphookReloadMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'cms.middleware.user.CurrentUserMiddleware',
-    'cms.middleware.page.CurrentPageMiddleware',
-    'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware',
 ]
 
 
@@ -191,21 +185,6 @@ INSTALLED_APPS = [
     'schedule', # full calendar integeration npm install -g bower
     'djangobower', # schedule dependency
 
-    # cms
-    'cms',  # django CMS itself
-    'treebeard',  # utilities for implementing a tree
-    'menus',  # helper for model independent hierarchical website navigation
-    'sekizai',  # for JavaScript and CSS management
-    'djangocms_admin_style',  # for the admin skin. You **must** add 'djangocms_admin_style' in the list **before** 'django.contrib.admin'.
-    'djangocms_file',
-    'djangocms_googlemap',
-    'djangocms_inherit',
-    'djangocms_picture',
-    'djangocms_teaser',
-    'djangocms_video',
-    'djangocms_link',
-    'djangocms_snippet',
-    "djangocms_text_ckeditor",
     "reversion",
 
     # Admin comes last so our apps can override some templates
@@ -328,36 +307,6 @@ STATIC_PRECOMPILER_COMPILERS = (
     'static_precompiler.compilers.LESS',
 )
 
-CMS_PLACEHOLDER_CONF = {
-    'content': {
-        'name' : _('Content'),
-        'plugins': ['TextPlugin', 'LinkPlugin'],
-        'default_plugins':[
-            {
-                'plugin_type':'TextPlugin',
-                'values':{
-                    'body':'<p>Great websites : %(_tag_child_1)s and %(_tag_child_2)s</p>'
-                },
-                'children':[
-                    {
-                        'plugin_type':'LinkPlugin',
-                        'values':{
-                            'name':'django',
-                            'url':'https://www.djangoproject.com/'
-                        },
-                    },
-                    {
-                        'plugin_type':'LinkPlugin',
-                        'values':{
-                            'name':'django-cms',
-                            'url':'https://www.django-cms.org'
-                        },
-                    },
-                ]
-            },
-        ]
-    }
-}
 
 CKEDITOR_CONFIGS = {
     'default': {
